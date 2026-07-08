@@ -1,0 +1,13 @@
+# Raw source data — too large for git (~18 GB)
+2013/
+2014/
+2015/
+2016/
+2017/
+2018/
+2019/
+2020/
+
+__pycache__/
+*.pyc
+.DS_Store
