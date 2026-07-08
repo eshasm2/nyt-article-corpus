@@ -2,7 +2,7 @@ name: Fetch Articles
 
 on:
   schedule:
-    - cron: "0 */2 * * *"   # every 2 hours
+    - cron: "0 */4 * * *"   # every 4 hours
   workflow_dispatch:          # manual trigger from GitHub UI
 
 jobs:
