@@ -32,7 +32,7 @@ def get_wayback_url(article_url, timestamp):
         r = requests.get( WAYBACK_AVAILABLE, params={"url": article_url, "timestamp": timestamp}, headers=HEADERS, timeout=10,)
         snap = r.json().get("archived_snapshots", {}).get("closest", {})
         if snap.get("available"):
-            return snap["url"]
+            return snap["url"].replace("http://", "https://", 1)
     except Exception:
         pass
     return None
