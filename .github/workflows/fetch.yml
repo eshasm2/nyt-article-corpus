@@ -1,23 +1,10 @@
 name: Fetch Articles
 
 on:
-  workflow_dispatch:          # manual trigger to start the chain
-  workflow_run:
-    workflows: ["Fetch Articles"]
-    types: [completed]        # fires on success, failure, cancel, or timeout
+  workflow_dispatch:   # manual trigger to start the chain; re-triggered automatically after each run
 
 jobs:
-  wait:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_run'   # skip wait on manual trigger
-    timeout-minutes: 65
-    steps:
-      - name: Wait 1 hour
-        run: sleep 3600
-
   fetch:
-    needs: [wait]
-    if: always() && (needs.wait.result == 'success' || needs.wait.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 355
 
@@ -48,3 +35,20 @@ jobs:
           git add success.json count.json
           git diff --cached --quiet || git commit -m "chore: fetch articles [skip ci]"
           git push
+
+  trigger-next:
+    needs: fetch
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+
+    permissions:
+      actions: write
+
+    steps:
+      - name: Wait 1 hour then start next run
+        run: |
+          sleep 3600
+          gh workflow run fetch.yml --repo ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
