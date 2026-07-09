@@ -101,6 +101,41 @@ def load_existing():
         return []
 
 
+def save_progress(success, by_year, existing, year_counts, total, run_label=""):
+    new_success = len(success) - len(existing)
+    all_runs_by_year = defaultdict(int)
+    for a in success:
+        yr = a.get("year")
+        if not yr:
+            m = re.search(r"nytimes\.com/(\d{4})/", a.get("article_url", ""))
+            yr = m.group(1) if m else "unknown"
+        all_runs_by_year[yr] += 1
+
+    total_in_dataset = sum(len(v) for v in by_year.values()) + len(existing)
+    count = {
+        "total_in_dataset": total_in_dataset,
+        "total_fetched_all_runs": len(success),
+        "total_remaining": total_in_dataset - len(success),
+        "all_runs": {"by_year": {yr: {"fetched": all_runs_by_year[yr]} for yr in sorted(all_runs_by_year)}},
+        "this_run": {
+            "sampled": total,
+            "success": new_success,
+            "failed": total - new_success,
+            "by_year": year_counts,
+        },
+    }
+
+    # Atomic write: write to tmp then rename so a kill mid-write never corrupts the file
+    for path, data in [("success.json", success), ("count.json", count)]:
+        tmp = path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(data, f, indent=2)
+        os.replace(tmp, path)
+
+    label = f" ({run_label})" if run_label else ""
+    print(f"  Saved{label}: {len(success)} total articles (+{new_success} this run).")
+
+
 def main():
     existing = load_existing()
     already_fetched = {a["article_url"] for a in existing}
@@ -169,43 +204,13 @@ def main():
             time.sleep(DELAY)
 
         year_counts[year] = {"sampled": len(urls), "success": year_success, "failed": year_failed}
-        print(f"  {year}: {year_success} success, {year_failed} failed\n")
+        print(f"  {year}: {year_success} success, {year_failed} failed")
+        save_progress(success, by_year, existing, year_counts, total, run_label=year)
         if timed_out:
             break
 
-    total_in_dataset = sum(len(v) for v in by_year.values()) + len(already_fetched)
-    new_success = len(success) - len(existing)
-
-    all_runs_by_year = defaultdict(int)
-    for a in success:
-        year = a.get("year")
-        if not year:
-            m = re.search(r"nytimes\.com/(\d{4})/", a.get("article_url", ""))
-            year = m.group(1) if m else "unknown"
-        all_runs_by_year[year] += 1
-
-    count = {
-        "total_in_dataset": total_in_dataset,
-        "total_fetched_all_runs": len(success),
-        "total_remaining": total_in_dataset - len(success),
-        "all_runs": {
-            "by_year": {yr: {"fetched": all_runs_by_year[yr]} for yr in sorted(all_runs_by_year)},
-        },
-        "this_run": {
-            "sampled": total,
-            "success": new_success,
-            "failed": total - new_success,
-            "by_year": year_counts,
-        },
-    }
-
-    with open("success.json", "w") as f:
-        json.dump(success, f, indent=2)
-    with open("count.json", "w") as f:
-        json.dump(count, f, indent=2)
-
-    print(f"Done. +{new_success} new articles ({len(success)} total across all runs).")
-    print("success.json / count.json written.")
+    save_progress(success, by_year, existing, year_counts, total, run_label="final")
+    print("Done.")
 
 
 if __name__ == "__main__":
