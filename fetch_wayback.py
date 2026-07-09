@@ -11,7 +11,7 @@ from collections import defaultdict
 import requests
 from bs4 import BeautifulSoup
 
-PER_YEAR = 500
+PER_YEAR = 250
 DELAY = 1.2  # seconds between requests
 MAX_RUNTIME_SECONDS = 5.5 * 3600  # save progress before GHA's 6-hour hard limit
 
@@ -143,6 +143,7 @@ def main():
 
     by_year = collect_by_year()
     years = sorted(by_year)
+    random.shuffle(years)
     print(f"Years found: {years}")
 
     sample = {}
