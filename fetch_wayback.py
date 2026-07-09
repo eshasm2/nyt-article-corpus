@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 
 PER_YEAR = 500
 DELAY = 1.2  # seconds between requests
+MAX_RUNTIME_SECONDS = 5.5 * 3600  # save progress before GHA's 6-hour hard limit
 
 WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
 HEADERS = {"User-Agent": "Mozilla/5.0 (research project)"} # label  script sends when server makes HTTP request, otherwise looks like bot
@@ -119,8 +120,10 @@ def main():
 
     success = list(existing)
     year_counts = {}
+    run_start = time.time()
 
     fetched = 0
+    timed_out = False
     for year in years:
         urls = sample[year]
         year_success = 0
@@ -128,6 +131,10 @@ def main():
         timestamp = f"{year}0701"  # mid-year snapshot for each year
 
         for url in urls:
+            if time.time() - run_start >= MAX_RUNTIME_SECONDS:
+                print(f"\nTime limit reached — saving progress and exiting early.")
+                timed_out = True
+                break
             fetched += 1
             print(f"[{fetched}/{total}] {url}")
             wb_url = get_wayback_url(url, timestamp)
@@ -163,6 +170,8 @@ def main():
 
         year_counts[year] = {"sampled": len(urls), "success": year_success, "failed": year_failed}
         print(f"  {year}: {year_success} success, {year_failed} failed\n")
+        if timed_out:
+            break
 
     total_in_dataset = sum(len(v) for v in by_year.values()) + len(already_fetched)
     new_success = len(success) - len(existing)
