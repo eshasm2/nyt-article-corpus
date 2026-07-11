@@ -1,29 +1,29 @@
 {
-  "total_in_dataset": 538938,
-  "total_fetched_all_runs": 10208,
-  "total_remaining": 528730,
+  "total_in_dataset": 540132,
+  "total_fetched_all_runs": 11252,
+  "total_remaining": 528880,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 1729
+        "fetched": 1914
       },
       "2014": {
-        "fetched": 1648
+        "fetched": 1813
       },
       "2015": {
-        "fetched": 1805
+        "fetched": 1997
       },
       "2016": {
-        "fetched": 1094
+        "fetched": 1227
       },
       "2017": {
-        "fetched": 860
+        "fetched": 1040
       },
       "2018": {
         "fetched": 836
       },
       "2019": {
-        "fetched": 993
+        "fetched": 1182
       },
       "2020": {
         "fetched": 1243
@@ -32,43 +32,38 @@
   },
   "this_run": {
     "sampled": 2000,
-    "success": 1194,
-    "failed": 806,
+    "success": 1044,
+    "failed": 956,
     "by_year": {
-      "2017": {
-        "sampled": 250,
-        "success": 184,
-        "failed": 66
-      },
-      "2016": {
-        "sampled": 250,
-        "success": 200,
-        "failed": 50
-      },
-      "2020": {
-        "sampled": 250,
-        "success": 196,
-        "failed": 54
-      },
       "2015": {
         "sampled": 250,
-        "success": 178,
-        "failed": 72
+        "success": 192,
+        "failed": 58
       },
-      "2019": {
+      "2017": {
         "sampled": 250,
-        "success": 181,
-        "failed": 69
+        "success": 180,
+        "failed": 70
       },
       "2013": {
         "sampled": 250,
-        "success": 181,
-        "failed": 69
+        "success": 185,
+        "failed": 65
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 189,
+        "failed": 61
       },
       "2014": {
         "sampled": 250,
-        "success": 74,
-        "failed": 26
+        "success": 165,
+        "failed": 85
+      },
+      "2016": {
+        "sampled": 250,
+        "success": 133,
+        "failed": 59
       }
     }
   }
