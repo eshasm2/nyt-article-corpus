@@ -1,64 +1,74 @@
 {
-  "total_in_dataset": 545434,
-  "total_fetched_all_runs": 16364,
-  "total_remaining": 529070,
+  "total_in_dataset": 546288,
+  "total_fetched_all_runs": 17239,
+  "total_remaining": 529049,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 2627
+        "fetched": 2752
       },
       "2014": {
-        "fetched": 2416
+        "fetched": 2584
       },
       "2015": {
-        "fetched": 2514
+        "fetched": 2611
       },
       "2016": {
-        "fetched": 1707
+        "fetched": 1886
       },
       "2017": {
         "fetched": 1512
       },
       "2018": {
-        "fetched": 1512
+        "fetched": 1672
       },
       "2019": {
-        "fetched": 2069
+        "fetched": 2089
       },
       "2020": {
-        "fetched": 2007
+        "fetched": 2133
       }
     }
   },
   "this_run": {
     "sampled": 2000,
-    "success": 854,
-    "failed": 1146,
+    "success": 875,
+    "failed": 1125,
     "by_year": {
       "2018": {
         "sampled": 250,
-        "success": 164,
-        "failed": 86
+        "success": 160,
+        "failed": 90
       },
       "2020": {
         "sampled": 250,
-        "success": 173,
-        "failed": 77
+        "success": 126,
+        "failed": 124
+      },
+      "2015": {
+        "sampled": 250,
+        "success": 97,
+        "failed": 153
+      },
+      "2013": {
+        "sampled": 250,
+        "success": 125,
+        "failed": 125
       },
       "2014": {
         "sampled": 250,
-        "success": 157,
-        "failed": 93
+        "success": 168,
+        "failed": 82
       },
-      "2019": {
-        "sampled": 250,
-        "success": 181,
-        "failed": 69
-      },
-      "2017": {
+      "2016": {
         "sampled": 250,
         "success": 179,
         "failed": 71
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 20,
+        "failed": 6
       }
     }
   }
