@@ -94,29 +94,38 @@ def collect_by_year():
 
 
 def load_existing():
-    try:
-        with open("success.json") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+    articles = []
+    for path in sorted(glob.glob("fetched/*.json")):
+        try:
+            with open(path) as f:
+                articles.extend(json.load(f))
+        except (FileNotFoundError, json.JSONDecodeError):
+            continue
+    return articles
 
 
 def save_progress(success, by_year, existing, year_counts, total, run_label=""):
     new_success = len(success) - len(existing)
-    all_runs_by_year = defaultdict(int)
-    for a in success:
-        yr = a.get("year")
-        if not yr:
-            m = re.search(r"nytimes\.com/(\d{4})/", a.get("article_url", ""))
-            yr = m.group(1) if m else "unknown"
-        all_runs_by_year[yr] += 1
 
+    # Group by year and write per-year files atomically
+    os.makedirs("fetched", exist_ok=True)
+    by_year_articles = defaultdict(list)
+    for a in success:
+        by_year_articles[a["year"]].append(a)
+    for yr, articles in by_year_articles.items():
+        path = f"fetched/{yr}.json"
+        tmp = path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(articles, f, indent=2)
+        os.replace(tmp, path)
+
+    all_runs_by_year = {yr: {"fetched": len(arts)} for yr, arts in sorted(by_year_articles.items())}
     total_in_dataset = sum(len(v) for v in by_year.values()) + len(existing)
     count = {
         "total_in_dataset": total_in_dataset,
         "total_fetched_all_runs": len(success),
         "total_remaining": total_in_dataset - len(success),
-        "all_runs": {"by_year": {yr: {"fetched": all_runs_by_year[yr]} for yr in sorted(all_runs_by_year)}},
+        "all_runs": {"by_year": all_runs_by_year},
         "this_run": {
             "sampled": total,
             "success": new_success,
@@ -124,13 +133,10 @@ def save_progress(success, by_year, existing, year_counts, total, run_label=""):
             "by_year": year_counts,
         },
     }
-
-    # Atomic write: write to tmp then rename so a kill mid-write never corrupts the file
-    for path, data in [("success.json", success), ("count.json", count)]:
-        tmp = path + ".tmp"
-        with open(tmp, "w") as f:
-            json.dump(data, f, indent=2)
-        os.replace(tmp, path)
+    tmp = "count.json.tmp"
+    with open(tmp, "w") as f:
+        json.dump(count, f, indent=2)
+    os.replace(tmp, "count.json")
 
     label = f" ({run_label})" if run_label else ""
     print(f"  Saved{label}: {len(success)} total articles (+{new_success} this run).")
@@ -164,8 +170,6 @@ def main():
         urls = sample[year]
         year_success = 0
         year_failed = 0
-        timestamp = f"{year}0701"  # mid-year snapshot for each year
-
         for url in urls:
             if time.time() - run_start >= MAX_RUNTIME_SECONDS:
                 print(f"\nTime limit reached — saving progress and exiting early.")
@@ -173,6 +177,8 @@ def main():
                 break
             fetched += 1
             print(f"[{fetched}/{total}] {url}")
+            m = re.search(r"/(\d{4}/\d{2}/\d{2})/", url)
+            timestamp = m.group(1).replace("/", "") if m else f"{year}0701"
             wb_url = get_wayback_url(url, timestamp)
 
             if not wb_url:
