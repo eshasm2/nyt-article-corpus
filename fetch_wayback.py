@@ -7,18 +7,19 @@ import random
 import re
 import time
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from bs4 import BeautifulSoup
 
 PER_YEAR = 250
-DELAY = 1.2  # seconds between requests
+WORKERS = 4   # parallel fetchers
+DELAY = 1.2   # seconds each worker sleeps between requests
 MAX_RUNTIME_SECONDS = 5.5 * 3600  # save progress before GHA's 6-hour hard limit
 
 WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
-HEADERS = {"User-Agent": "Mozilla/5.0 (research project)"} # label  script sends when server makes HTTP request, otherwise looks like bot
+HEADERS = {"User-Agent": "Mozilla/5.0 (research project)"}
 
-# strip the paywall info
 PAYWALL_RE = re.compile(
     r"(get unlimited access|subscribe to continue|already a subscriber|"
     r"create a free account|log in|sign in to continue|"
@@ -27,10 +28,9 @@ PAYWALL_RE = re.compile(
 )
 
 
-
 def get_wayback_url(article_url, timestamp):
     try:
-        r = requests.get( WAYBACK_AVAILABLE, params={"url": article_url, "timestamp": timestamp}, headers=HEADERS, timeout=10,)
+        r = requests.get(WAYBACK_AVAILABLE, params={"url": article_url, "timestamp": timestamp}, headers=HEADERS, timeout=10)
         snap = r.json().get("archived_snapshots", {}).get("closest", {})
         if snap.get("available"):
             return snap["url"].replace("http://", "https://", 1)
@@ -81,6 +81,36 @@ def clean(text):
     return text.strip()
 
 
+def fetch_one(url, year):
+    """Fetch a single article. Returns a result dict. Called from worker threads."""
+    m = re.search(r"/(\d{4}/\d{2}/\d{2})/", url)
+    timestamp = m.group(1).replace("/", "") if m else f"{year}0701"
+
+    wb_url = get_wayback_url(url, timestamp)
+    if not wb_url:
+        time.sleep(DELAY)
+        return {"status": "no_snapshot", "url": url, "year": year}
+
+    text = None
+    last_error = None
+    for attempt in range(3):
+        try:
+            r = requests.get(wb_url, headers=HEADERS, timeout=20)
+            r.raise_for_status()
+            text = extract_text(r.text)
+            break
+        except Exception as e:
+            last_error = str(e)
+            time.sleep(DELAY * (attempt + 2))
+
+    time.sleep(DELAY)
+
+    if text:
+        return {"status": "success", "url": url, "year": year, "wb_url": wb_url, "text": text}
+    reason = "no_text_extracted" if last_error is None else f"fetch_error: {last_error}"
+    return {"status": reason, "url": url, "year": year}
+
+
 def collect_by_year():
     by_year = defaultdict(list)
     url_files = sorted(glob.glob("urls/[0-9][0-9][0-9][0-9].txt"))
@@ -107,7 +137,6 @@ def load_existing():
 def save_progress(success, by_year, existing, year_counts, total, run_label=""):
     new_success = len(success) - len(existing)
 
-    # Group by year and write per-year files atomically
     os.makedirs("fetched", exist_ok=True)
     by_year_articles = defaultdict(list)
     for a in success:
@@ -158,63 +187,53 @@ def main():
         sample[year] = random.sample(pool, min(PER_YEAR, len(pool)))
 
     total = sum(len(v) for v in sample.values())
-    print(f"Total to fetch this run: {total} ({PER_YEAR} new per year)\n")
+    print(f"Total to fetch this run: {total} ({PER_YEAR} per year, {WORKERS} workers)\n")
 
     success = list(existing)
     year_counts = {}
     run_start = time.time()
-
-    fetched = 0
     timed_out = False
+
     for year in years:
+        if timed_out:
+            break
+        if time.time() - run_start >= MAX_RUNTIME_SECONDS:
+            print("\nTime limit reached — saving progress and exiting early.")
+            timed_out = True
+            break
+
         urls = sample[year]
         year_success = 0
         year_failed = 0
-        for url in urls:
-            if time.time() - run_start >= MAX_RUNTIME_SECONDS:
-                print(f"\nTime limit reached — saving progress and exiting early.")
-                timed_out = True
-                break
-            fetched += 1
-            print(f"[{fetched}/{total}] {url}")
-            m = re.search(r"/(\d{4}/\d{2}/\d{2})/", url)
-            timestamp = m.group(1).replace("/", "") if m else f"{year}0701"
-            wb_url = get_wayback_url(url, timestamp)
+        fetched_this_year = 0
 
-            if not wb_url:
-                print(f"  -> no snapshot")
-                year_failed += 1
-                time.sleep(DELAY)
-                continue
+        with ThreadPoolExecutor(max_workers=WORKERS) as executor:
+            futures = {executor.submit(fetch_one, url, year): url for url in urls}
+            for future in as_completed(futures):
+                result = future.result()
+                fetched_this_year += 1
+                print(f"  [{fetched_this_year}/{len(urls)}] {result['url'][:80]}")
 
-            text = None
-            last_error = None
-            for attempt in range(3):
-                try:
-                    r = requests.get(wb_url, headers=HEADERS, timeout=20)
-                    r.raise_for_status()
-                    text = extract_text(r.text)
+                if result["status"] == "success":
+                    success.append({
+                        "year": result["year"],
+                        "article_url": result["url"],
+                        "wayback_url": result["wb_url"],
+                        "text": result["text"],
+                    })
+                    year_success += 1
+                else:
+                    print(f"    -> {result['status']}")
+                    year_failed += 1
+
+                if time.time() - run_start >= MAX_RUNTIME_SECONDS:
+                    print("\nTime limit reached mid-year — saving and stopping.")
+                    timed_out = True
                     break
-                except Exception as e:
-                    last_error = str(e)
-                    print(f"  -> attempt {attempt + 1} failed: {last_error}")
-                    time.sleep(DELAY * (attempt + 2))
-
-            if text:
-                success.append({"year": year, "article_url": url, "wayback_url": wb_url, "text": text})
-                year_success += 1
-            else:
-                reason = "no_text_extracted" if last_error is None else f"fetch_error: {last_error}"
-                print(f"  -> failed: {reason}")
-                year_failed += 1
-
-            time.sleep(DELAY)
 
         year_counts[year] = {"sampled": len(urls), "success": year_success, "failed": year_failed}
         print(f"  {year}: {year_success} success, {year_failed} failed")
         save_progress(success, by_year, existing, year_counts, total, run_label=year)
-        if timed_out:
-            break
 
     save_progress(success, by_year, existing, year_counts, total, run_label="final")
     print("Done.")
