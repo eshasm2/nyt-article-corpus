@@ -1,7 +1,7 @@
 {
-  "total_in_dataset": 572890,
-  "total_fetched_all_runs": 43919,
-  "total_remaining": 528971,
+  "total_in_dataset": 573843,
+  "total_fetched_all_runs": 43978,
+  "total_remaining": 529865,
   "all_runs": {
     "by_year": {
       "2013": {
@@ -20,7 +20,7 @@
         "fetched": 5201
       },
       "2018": {
-        "fetched": 4951
+        "fetched": 5010
       },
       "2019": {
         "fetched": 5522
@@ -32,48 +32,48 @@
   },
   "this_run": {
     "sampled": 2000,
-    "success": 953,
-    "failed": 1047,
+    "success": 59,
+    "failed": 1941,
     "by_year": {
-      "2014": {
+      "2018": {
         "sampled": 250,
-        "success": 93,
-        "failed": 157
-      },
-      "2015": {
-        "sampled": 250,
-        "success": 98,
-        "failed": 152
+        "success": 59,
+        "failed": 191
       },
       "2017": {
         "sampled": 250,
-        "success": 137,
-        "failed": 113
-      },
-      "2018": {
-        "sampled": 250,
-        "success": 123,
-        "failed": 127
-      },
-      "2020": {
-        "sampled": 250,
-        "success": 112,
-        "failed": 138
-      },
-      "2019": {
-        "sampled": 250,
-        "success": 140,
-        "failed": 110
-      },
-      "2016": {
-        "sampled": 250,
-        "success": 126,
-        "failed": 124
+        "success": 0,
+        "failed": 250
       },
       "2013": {
         "sampled": 250,
-        "success": 124,
-        "failed": 126
+        "success": 0,
+        "failed": 250
+      },
+      "2016": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2014": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2015": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2020": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
       }
     }
   }
