@@ -1,79 +1,79 @@
 {
-  "total_in_dataset": 587704,
-  "total_fetched_all_runs": 58573,
-  "total_remaining": 529131,
+  "total_in_dataset": 588497,
+  "total_fetched_all_runs": 59505,
+  "total_remaining": 528992,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 7930
+        "fetched": 8044
       },
       "2014": {
-        "fetched": 7360
+        "fetched": 7465
       },
       "2015": {
-        "fetched": 7489
+        "fetched": 7616
       },
       "2016": {
-        "fetched": 7126
+        "fetched": 7228
       },
       "2017": {
-        "fetched": 7025
+        "fetched": 7122
       },
       "2018": {
-        "fetched": 6868
+        "fetched": 6982
       },
       "2019": {
-        "fetched": 7496
+        "fetched": 7630
       },
       "2020": {
-        "fetched": 7279
+        "fetched": 7418
       }
     }
   },
   "this_run": {
     "sampled": 2000,
-    "success": 793,
-    "failed": 1207,
+    "success": 932,
+    "failed": 1068,
     "by_year": {
-      "2013": {
-        "sampled": 250,
-        "success": 82,
-        "failed": 168
-      },
-      "2020": {
-        "sampled": 250,
-        "success": 101,
-        "failed": 149
-      },
-      "2017": {
-        "sampled": 250,
-        "success": 111,
-        "failed": 139
-      },
-      "2018": {
-        "sampled": 250,
-        "success": 104,
-        "failed": 146
-      },
-      "2019": {
-        "sampled": 250,
-        "success": 94,
-        "failed": 156
-      },
-      "2015": {
+      "2014": {
         "sampled": 250,
         "success": 105,
         "failed": 145
       },
-      "2014": {
+      "2015": {
         "sampled": 250,
-        "success": 103,
-        "failed": 147
+        "success": 127,
+        "failed": 123
       },
       "2016": {
         "sampled": 250,
-        "success": 93,
-        "failed": 157
+        "success": 102,
+        "failed": 148
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 134,
+        "failed": 116
+      },
+      "2013": {
+        "sampled": 250,
+        "success": 114,
+        "failed": 136
+      },
+      "2020": {
+        "sampled": 250,
+        "success": 139,
+        "failed": 111
+      },
+      "2018": {
+        "sampled": 250,
+        "success": 114,
+        "failed": 136
+      },
+      "2017": {
+        "sampled": 250,
+        "success": 97,
+        "failed": 153
       }
     }
   }
