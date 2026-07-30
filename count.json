@@ -1,23 +1,23 @@
 {
-  "total_in_dataset": 614326,
-  "total_fetched_all_runs": 84661,
-  "total_remaining": 529665,
+  "total_in_dataset": 614585,
+  "total_fetched_all_runs": 85073,
+  "total_remaining": 529512,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 11137
+        "fetched": 11242
       },
       "2014": {
-        "fetched": 10649
+        "fetched": 10732
       },
       "2015": {
-        "fetched": 10686
+        "fetched": 10764
       },
       "2016": {
-        "fetched": 10353
+        "fetched": 10436
       },
       "2017": {
-        "fetched": 10201
+        "fetched": 10264
       },
       "2018": {
         "fetched": 10263
@@ -32,45 +32,45 @@
   },
   "this_run": {
     "sampled": 2000,
-    "success": 259,
-    "failed": 1741,
+    "success": 412,
+    "failed": 1588,
     "by_year": {
-      "2019": {
+      "2015": {
         "sampled": 250,
-        "success": 62,
-        "failed": 188
+        "success": 78,
+        "failed": 172
       },
-      "2014": {
+      "2013": {
         "sampled": 250,
-        "success": 98,
-        "failed": 152
-      },
-      "2018": {
-        "sampled": 250,
-        "success": 82,
-        "failed": 168
-      },
-      "2016": {
-        "sampled": 250,
-        "success": 17,
-        "failed": 233
+        "success": 105,
+        "failed": 145
       },
       "2017": {
         "sampled": 250,
-        "success": 0,
-        "failed": 250
+        "success": 63,
+        "failed": 187
       },
-      "2015": {
+      "2016": {
         "sampled": 250,
-        "success": 0,
-        "failed": 250
+        "success": 83,
+        "failed": 167
+      },
+      "2014": {
+        "sampled": 250,
+        "success": 83,
+        "failed": 167
       },
       "2020": {
         "sampled": 250,
         "success": 0,
         "failed": 250
       },
-      "2013": {
+      "2018": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2019": {
         "sampled": 250,
         "success": 0,
         "failed": 250
