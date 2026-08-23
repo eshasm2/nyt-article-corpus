@@ -125,7 +125,7 @@ def collect_by_year():
 
 def load_existing():
     articles = []
-    for path in sorted(glob.glob("fetched/*.json")):
+    for path in sorted(glob.glob("fetched/*/*.json")):
         try:
             with open(path) as f:
                 articles.extend(json.load(f))
@@ -135,21 +135,27 @@ def load_existing():
 
 
 def save_progress(success, by_year, existing, year_counts, total, run_label=""):
-    new_success = len(success) - len(existing)
+    new_success_records = success[len(existing):]
+    new_success = len(new_success_records)
 
-    os.makedirs("fetched", exist_ok=True)
-    by_year_articles = defaultdict(list)
-    for a in success:
-        by_year_articles[a["year"]].append(a)
-    for yr, articles in by_year_articles.items():
-        path = f"fetched/{yr}.json"
+    new_by_year = defaultdict(list)
+    for a in new_success_records:
+        new_by_year[a["year"]].append(a)
+    for yr, articles in new_by_year.items():
+        year_dir = f"fetched/{yr}"
+        os.makedirs(year_dir, exist_ok=True)
+        next_idx = len(glob.glob(f"{year_dir}/*.json"))
+        path = f"{year_dir}/{next_idx:04d}.json"
         tmp = path + ".tmp"
         with open(tmp, "w") as f:
             json.dump(articles, f, indent=2)
         os.replace(tmp, path)
 
-    all_runs_by_year = {yr: {"fetched": len(arts)} for yr, arts in sorted(by_year_articles.items())}
-    total_in_dataset = sum(len(v) for v in by_year.values()) + len(existing)
+    by_year_totals = defaultdict(int)
+    for a in success:
+        by_year_totals[a["year"]] += 1
+    all_runs_by_year = {yr: {"fetched": n} for yr, n in sorted(by_year_totals.items())}
+    total_in_dataset = sum(len(v) for v in by_year.values())
     count = {
         "total_in_dataset": total_in_dataset,
         "total_fetched_all_runs": len(success),
