@@ -3,6 +3,10 @@ name: Fetch Articles
 on:
   workflow_dispatch:   # manual trigger to start the chain; re-triggered automatically after each run
 
+concurrency:
+  group: fetch-articles
+  cancel-in-progress: false   # queue instead of killing in-flight fetch/commit work
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
