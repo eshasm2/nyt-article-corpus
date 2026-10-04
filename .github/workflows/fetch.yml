@@ -1,7 +1,9 @@
 name: Fetch Articles
 
 on:
-  workflow_dispatch:   # manual trigger to start the chain; re-triggered automatically after each run
+  workflow_dispatch:   # manual trigger, e.g. to kick off a run immediately
+  schedule:
+    - cron: "0 */5 * * *"   # every 5 hours; concurrency group below prevents overlap with a still-running job
 
 concurrency:
   group: fetch-articles
@@ -39,20 +41,3 @@ jobs:
           git add fetched/ count.json
           git diff --cached --quiet || git commit -m "chore: fetch articles [skip ci]"
           git push
-
-  trigger-next:
-    needs: fetch
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 65
-
-    permissions:
-      actions: write
-
-    steps:
-      - name: Wait 1 hour then start next run
-        run: |
-          sleep 3600
-          gh workflow run fetch.yml --repo ${{ github.repository }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
