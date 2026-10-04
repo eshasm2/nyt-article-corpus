@@ -17,6 +17,12 @@ WORKERS = 4   # parallel fetchers
 DELAY = 1.2   # seconds each worker sleeps between requests
 MAX_RUNTIME_SECONDS = 5.5 * 3600  # save progress before GHA's 6-hour hard limit
 
+# Unique per run (and per save within a run) so shard filenames can never collide,
+# even if this run's checkout is stale relative to another run that already pushed
+# (e.g. a scheduled run queued behind a concurrency group checks out the commit from
+# trigger time, not from when it actually starts executing).
+RUN_ID = os.environ.get("GITHUB_RUN_ID", f"local{int(time.time())}")
+
 WAYBACK_AVAILABLE = "https://archive.org/wayback/available"
 HEADERS = {"User-Agent": "Mozilla/5.0 (research project)"}
 
@@ -134,7 +140,11 @@ def load_existing():
     return articles
 
 
+_save_call_count = 0
+
+
 def save_progress(success, by_year, last_saved_count, year_counts, total, run_label=""):
+    global _save_call_count
     new_success_records = success[last_saved_count:]
     new_success = len(success) - last_saved_count
 
@@ -144,8 +154,8 @@ def save_progress(success, by_year, last_saved_count, year_counts, total, run_la
     for yr, articles in new_by_year.items():
         year_dir = f"fetched/{yr}"
         os.makedirs(year_dir, exist_ok=True)
-        next_idx = len(glob.glob(f"{year_dir}/*.json"))
-        path = f"{year_dir}/{next_idx:04d}.json"
+        path = f"{year_dir}/{RUN_ID}-{_save_call_count:02d}.json"
+        _save_call_count += 1
         tmp = path + ".tmp"
         with open(tmp, "w") as f:
             json.dump(articles, f, indent=2)
