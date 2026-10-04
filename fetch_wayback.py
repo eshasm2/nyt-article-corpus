@@ -134,9 +134,9 @@ def load_existing():
     return articles
 
 
-def save_progress(success, by_year, existing, year_counts, total, run_label=""):
-    new_success_records = success[len(existing):]
-    new_success = len(new_success_records)
+def save_progress(success, by_year, last_saved_count, year_counts, total, run_label=""):
+    new_success_records = success[last_saved_count:]
+    new_success = len(success) - last_saved_count
 
     new_by_year = defaultdict(list)
     for a in new_success_records:
@@ -196,6 +196,7 @@ def main():
     print(f"Total to fetch this run: {total} ({PER_YEAR} per year, {WORKERS} workers)\n")
 
     success = list(existing)
+    last_saved_count = len(success)
     year_counts = {}
     run_start = time.time()
     timed_out = False
@@ -239,9 +240,10 @@ def main():
 
         year_counts[year] = {"sampled": len(urls), "success": year_success, "failed": year_failed}
         print(f"  {year}: {year_success} success, {year_failed} failed")
-        save_progress(success, by_year, existing, year_counts, total, run_label=year)
+        save_progress(success, by_year, last_saved_count, year_counts, total, run_label=year)
+        last_saved_count = len(success)
 
-    save_progress(success, by_year, existing, year_counts, total, run_label="final")
+    save_progress(success, by_year, last_saved_count, year_counts, total, run_label="final")
     print("Done.")
 
 
