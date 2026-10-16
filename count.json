@@ -35,45 +35,45 @@
     "success": 0,
     "failed": 2000,
     "by_year": {
-      "2019": {
-        "sampled": 250,
-        "success": 91,
-        "failed": 159
-      },
       "2018": {
         "sampled": 250,
-        "success": 100,
-        "failed": 150
-      },
-      "2020": {
-        "sampled": 250,
-        "success": 92,
-        "failed": 158
-      },
-      "2016": {
-        "sampled": 250,
-        "success": 93,
-        "failed": 157
-      },
-      "2017": {
-        "sampled": 250,
-        "success": 95,
-        "failed": 155
-      },
-      "2013": {
-        "sampled": 250,
-        "success": 90,
-        "failed": 160
+        "success": 0,
+        "failed": 250
       },
       "2015": {
         "sampled": 250,
-        "success": 93,
-        "failed": 157
+        "success": 0,
+        "failed": 250
       },
       "2014": {
         "sampled": 250,
-        "success": 96,
-        "failed": 154
+        "success": 0,
+        "failed": 250
+      },
+      "2020": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2017": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2013": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
+      },
+      "2016": {
+        "sampled": 250,
+        "success": 0,
+        "failed": 250
       }
     }
   }
