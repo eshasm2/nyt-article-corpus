@@ -1,32 +1,32 @@
 {
   "total_in_dataset": 529924,
-  "total_fetched_all_runs": 434672,
-  "total_remaining": 95252,
+  "total_fetched_all_runs": 435678,
+  "total_remaining": 94246,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 55224
+        "fetched": 55320
       },
       "2014": {
-        "fetched": 53207
+        "fetched": 53336
       },
       "2015": {
-        "fetched": 52438
+        "fetched": 52561
       },
       "2016": {
-        "fetched": 52798
+        "fetched": 52909
       },
       "2017": {
-        "fetched": 55088
+        "fetched": 55223
       },
       "2018": {
-        "fetched": 55849
+        "fetched": 55978
       },
       "2019": {
-        "fetched": 55239
+        "fetched": 55378
       },
       "2020": {
-        "fetched": 54829
+        "fetched": 54973
       }
     }
   },
@@ -35,25 +35,35 @@
     "success": 0,
     "failed": 2000,
     "by_year": {
-      "2019": {
+      "2013": {
+        "sampled": 250,
+        "success": 96,
+        "failed": 154
+      },
+      "2016": {
         "sampled": 250,
         "success": 111,
         "failed": 139
       },
       "2014": {
         "sampled": 250,
-        "success": 132,
-        "failed": 118
+        "success": 129,
+        "failed": 121
       },
-      "2016": {
+      "2018": {
         "sampled": 250,
-        "success": 119,
-        "failed": 131
+        "success": 129,
+        "failed": 121
       },
-      "2013": {
+      "2019": {
         "sampled": 250,
-        "success": 124,
-        "failed": 126
+        "success": 139,
+        "failed": 111
+      },
+      "2017": {
+        "sampled": 250,
+        "success": 135,
+        "failed": 115
       },
       "2015": {
         "sampled": 250,
@@ -62,18 +72,8 @@
       },
       "2020": {
         "sampled": 250,
-        "success": 122,
-        "failed": 128
-      },
-      "2017": {
-        "sampled": 250,
-        "success": 115,
-        "failed": 135
-      },
-      "2018": {
-        "sampled": 250,
-        "success": 117,
-        "failed": 133
+        "success": 144,
+        "failed": 106
       }
     }
   }
