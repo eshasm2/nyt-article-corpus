@@ -1,32 +1,32 @@
 {
   "total_in_dataset": 529924,
-  "total_fetched_all_runs": 446242,
-  "total_remaining": 83682,
+  "total_fetched_all_runs": 447174,
+  "total_remaining": 82750,
   "all_runs": {
     "by_year": {
       "2013": {
-        "fetched": 56688
+        "fetched": 56814
       },
       "2014": {
-        "fetched": 54626
+        "fetched": 54729
       },
       "2015": {
-        "fetched": 53868
+        "fetched": 53984
       },
       "2016": {
-        "fetched": 54240
+        "fetched": 54367
       },
       "2017": {
-        "fetched": 56545
+        "fetched": 56670
       },
       "2018": {
-        "fetched": 57276
+        "fetched": 57367
       },
       "2019": {
-        "fetched": 56677
+        "fetched": 56811
       },
       "2020": {
-        "fetched": 56322
+        "fetched": 56432
       }
     }
   },
@@ -35,45 +35,45 @@
     "success": 0,
     "failed": 2000,
     "by_year": {
-      "2019": {
-        "sampled": 250,
-        "success": 94,
-        "failed": 156
-      },
-      "2017": {
-        "sampled": 250,
-        "success": 129,
-        "failed": 121
-      },
       "2018": {
         "sampled": 250,
-        "success": 102,
-        "failed": 148
+        "success": 91,
+        "failed": 159
       },
       "2020": {
         "sampled": 250,
-        "success": 122,
-        "failed": 128
+        "success": 110,
+        "failed": 140
       },
       "2014": {
         "sampled": 250,
-        "success": 117,
-        "failed": 133
-      },
-      "2013": {
-        "sampled": 250,
-        "success": 118,
-        "failed": 132
+        "success": 103,
+        "failed": 147
       },
       "2015": {
         "sampled": 250,
-        "success": 117,
-        "failed": 133
+        "success": 116,
+        "failed": 134
+      },
+      "2017": {
+        "sampled": 250,
+        "success": 125,
+        "failed": 125
+      },
+      "2019": {
+        "sampled": 250,
+        "success": 134,
+        "failed": 116
       },
       "2016": {
         "sampled": 250,
-        "success": 122,
-        "failed": 128
+        "success": 127,
+        "failed": 123
+      },
+      "2013": {
+        "sampled": 250,
+        "success": 126,
+        "failed": 124
       }
     }
   }
